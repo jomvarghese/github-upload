@@ -10,14 +10,46 @@
             border-radius: 6px;
             box-shadow: 0 2px 4px rgba (0,0,0,0.1);
         }
-        
+        .command {
+            margin-bottom: 20px;
+        }
+        .command-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+        .command-code {
+            background-color: bisque;
+            padding: 10px;
+            border-radius: 4px;
+            font-family:'Courier New', Courier, monospace;
+            color:#34495e
+            display: inline-block;
+        }
     </style>
     </head>
     
         <body>
         <h1> Basic Git command </h1>
-        <div className="section">
-            <div className="command"></div>
+        <div class="section">
+        <div class="command"></div>
+            <p class="command-title">1.Setup user details</p>
+            <p class="command-code">git config --global user.name "Your User Name" </p>
+            <p class="command-code">git config --global user.email "Your email" </p>
+            <p class="command-code">git config --global user.password "Your password" </p>
         </div>
+        <div class="command">
+            <p class="command-title">2.Help on Git Command</p>
+            <p class="command-code">git --help" </p>
+        </div>
+            <p class="command-title">3.Initialize a git repository</p>
+            <p class="command-code">git init</p>
+            <p class="command-title">4.Clone a git repository</p>
+            <p class="command-code">git clone &lt;repository-url&gt;</p>
+            <p class="command-title">5.Add file to Staging</p>
+            <p class="command-code">git add &lt;File-name&gt;</p>
+            <div>
+
+            </div>
     </body>
 </html>
