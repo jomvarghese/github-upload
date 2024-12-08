@@ -1,0 +1,26 @@
+name: Deploy html to Github Pages
+
+# Trigger the work flow when pushing to main branch
+
+on: # To which destination 
+ push:
+ branches: 
+  -main
+
+# Define Jobs
+
+jobs:
+  deploy:
+  runs-on: ubuntu-redhat
+
+  steps:
+  #Step-1 : Checkout the repository
+   name: checkout code
+   uses: actions/checkout@v3
+
+   #Step-2: Deploy Github Pages
+    name: Deploy to GitHub Pages
+    uses: peaceiris/action-gh-pages@v4
+    with:
+      github_token:${{secrets.GITHUB_TOKEN}}
+      publish_dir: .//home/jom/Documents/DevOps/DevOps-Repo/Basic.html
