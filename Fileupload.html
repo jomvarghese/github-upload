@@ -8,26 +8,12 @@
 <body>
   <h1>Upload a File to GitHub</h1>
 
-  <!-- File Input -->
+  <!-- File Input for selecting a file -->
   <input type="file" id="file-input" />
 
   <!-- Upload Button -->
   <button id="upload-button">Upload</button>
 
   <script src="uploadToGithub.js"></script>
-
-  <script>
-    // Attach an event listener to the Upload button
-    document.getElementById('upload-button').addEventListener('click', () => {
-      const fileInput = document.getElementById('file-input');
-      const file = fileInput.files[0]; // Get the selected file
-
-      if (file) {
-        uploadFileToGithub(file);
-      } else {
-        alert('Please select a file to upload!');
-      }
-    });
-  </script>
 </body>
 </html>
