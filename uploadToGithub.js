@@ -1,9 +1,8 @@
 const GITHUB_TOKEN = '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';
 const REPO_OWNER = 'jomvarghese';
-const REPO_NAME = 'jomvarghese/github-upload';
-const FILE_PATH = 'github-upload/WorkSpace'; // Path in the repo
+const REPO_NAME = 'github-upload';
+const FILE_PATH = 'WorkSpace/filename.txt'; // Path in the repo
 
-// Function to upload file to GitHub repository
 async function uploadFileToGithub(file) {
   const fileContent = await readFile(file);
 
@@ -15,9 +14,9 @@ async function uploadFileToGithub(file) {
   };
 
   const data = {
-    message: 'Uploading file via API', // commit message
+    message: 'Uploading file to Workspace folder', // commit message
     content: btoa(fileContent), // File content encoded in Base64
-    branch: 'master' // You can change this if you want to upload to a different branch
+    branch: 'main' // You can change this to a different branch if needed
   };
 
   try {
@@ -45,7 +44,7 @@ function readFile(file) {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
-    reader.readAsText(file); // You can also use readAsDataURL or readAsArrayBuffer based on file type
+    reader.readAsText(file); // For text files, adjust for other types (like images) if needed
   });
 }
 
