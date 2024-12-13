@@ -1,7 +1,7 @@
-const GITHUB_TOKEN = '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';
-const REPO_OWNER = 'jomvarghese';
-const REPO_NAME = 'github-upload';
-const FILE_PATH = 'WorkSpace/filename.txt'; // Path in the repo
+const accessToken = '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';
+const repoOwner = 'jomvarghese';
+const repoName = 'github-upload';
+const filePath = 'WorkSpace/filename.txt'; // Path in the repo
 
 async function uploadFileToGithub(file) {
   const fileContent = await readFile(file);
