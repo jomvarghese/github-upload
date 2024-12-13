@@ -1,7 +1,7 @@
-const accessToken = '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';
+const accessToken = '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';
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
-const filePath = 'WorkSpace/filename.docx'; // Path in the repo
+const filePath = 'WorkSpace/filename.ext'; // Path in the repo
 
 // Function to upload file to GitHub repository
 async function uploadFileToGithub(file) {
