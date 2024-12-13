@@ -1,4 +1,4 @@
-const accessToken = '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';
+const accessToken = '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';
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
 const filePath = 'WorkSpace/filename.ext'; // Path in the repo
@@ -18,7 +18,7 @@ async function uploadFileToGithub(file) {
   const data = {
     message: 'Uploading file to Workspace folder', // commit message
     content: btoa(fileContent), // Base64 encoded file content
-    branch: 'main', // You can change this to a different branch if needed
+    branch: 'master', // You can change this to a different branch if needed
   };
 
   try {
