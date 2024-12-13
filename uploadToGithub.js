@@ -17,7 +17,7 @@ async function uploadFileToGithub(file) {
   const data = {
     message: 'Uploading file via API', // commit message
     content: btoa(fileContent), // File content encoded in Base64
-    branch: 'main' // You can change this if you want to upload to a different branch
+    branch: 'master' // You can change this if you want to upload to a different branch
   };
 
   try {
