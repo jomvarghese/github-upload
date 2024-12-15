@@ -1,4 +1,4 @@
-const accessToken = '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';
+const accessToken = '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';
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
 const filePath = 'WorkSpace/'; // Path in the repo
