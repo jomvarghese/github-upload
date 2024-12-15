@@ -1,4 +1,4 @@
-const accessToken = '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';
+const accessToken = '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';
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
 const filePath = 'WorkSpace/filename.pdf'; // Path in the repo
