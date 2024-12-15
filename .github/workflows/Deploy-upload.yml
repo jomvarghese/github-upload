@@ -1,39 +1,33 @@
-name: Log File Upload to GitHub Repository
+name: Git Push Monitor
 
+# Trigger the workflow on a push event
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'WorkSpace/**'  # Watches for changes in the WorkSpace folder
+      - master  # You can specify any branch or multiple branches
+    #
 
 jobs:
-  log_upload:
-    runs-on: self-hosted
+  monitor_push:
+    runs-on: self-hosted  # Choose the operating system for the runner
 
     steps:
-    # Step 1: Checkout the repository to access the files
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Step 2: Set up Git configuration
-    - name: Set up Git
-      run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
+      - name: Get the push information
+        run: |
+          echo "Push event details:"
+          echo "Pushed by: $GITHUB_ACTOR"
+          echo "Branch: $GITHUB_REF"
+          echo "Commit message: $GITHUB_HEAD_REF"
+          echo "Commit SHA: $GITHUB_SHA"
+          
+      - name: Send notification (optional)
+        run: |
+          echo "A push has occurred in the repository. Commit: $GITHUB_SHA"
+          
+          # For example, you could send an email or a Slack notification here
+          # Replace this with actual commands if you want to send real notifications
 
-    # Step 3: Append a log entry to the Log_upload file
-    - name: Append log entry to Log_upload file
-      run: |
-        # Get the current date and time
-        timestamp=$(date +"%Y-%m-%d %H:%M:%S")
-        
-        # Write the log message into the Log_upload file
-        echo "$timestamp - A new file was uploaded to the WorkSpace folder." >> Log_upload.txt
-
-    # Step 4: Commit and push changes to the repository
-    - name: Commit and push changes
-      run: |
-        git add Log_upload.txt
-        git commit -m "Log file upload event: $(date)"
-        git push
+      # You can add additional steps to process the push further if needed
