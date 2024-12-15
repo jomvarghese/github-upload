@@ -3,7 +3,7 @@ name: Log File Upload to GitHub Repository
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'WorkSpace/**'  # Watches for changes in the WorkSpace folder
 
