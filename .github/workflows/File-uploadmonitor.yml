@@ -1,0 +1,25 @@
+name: File Upload Notification
+
+# Trigger this workflow on push events to the repository
+on:
+  push:
+    # Trigger the workflow on any file change (can be limited to specific directories or file types)
+    paths:
+        - 'WorkSpace/*'  
+
+jobs:
+  notify:
+    runs-on: self-hosted  
+    
+    steps:
+    # Checkout the repository to have access to the files
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    # Send a notification when a file is uploaded/changed in the repository
+    - name: Send file upload message
+      run: |
+        echo "A file has been uploaded to the Workspace folder!"  # Here you can customize the message
+        echo "Details of the uploaded file(s):"
+        echo "--------------------------------------"
+        git log -1 --stat  # Displays the last commit with file changes (optional, for details)

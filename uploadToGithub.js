@@ -1,10 +1,9 @@
-const accessToken = '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';
+const accessToken = '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';
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
-const filePath = 'WorkSpace/filename.ext'; // Path in the repo
 
-// Function to upload file to GitHub repository
-async function uploadFileToGithub(file) {
+// Function to upload a file to GitHub repository
+async function uploadFileToGithub(file, filePath) {
   const fileContent = await readFile(file); // Read the file (whether text or binary)
 
   // GitHub API URL
@@ -17,7 +16,7 @@ async function uploadFileToGithub(file) {
 
   const data = {
     message: 'Uploading file to Workspace folder', // commit message
-    content: btoa(fileContent), // Base64 encoded file content
+    content: fileContent, // Base64 encoded file content
     branch: 'master', // You can change this to a different branch if needed
   };
 
@@ -48,15 +47,20 @@ function readFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
-    // Choose the appropriate read method based on file type
+    // If the file is a text file, read it as text
     if (file.type.startsWith('text')) {
-      reader.onload = () => resolve(reader.result);  // Read as text for text-based files
+      reader.onload = () => resolve(btoa(reader.result));  // Read as base64 for text files
       reader.onerror = reject;
-      reader.readAsText(file);
+      reader.readAsText(file);  // For text files
     } else {
-      reader.onload = () => resolve(reader.result);  // Read as DataURL for binary files
+      // For binary files (like images, pdfs, etc.), read as DataURL
+      reader.onload = () => {
+        // Extract base64 part from DataURL (if binary content)
+        const base64Data = reader.result.split(',')[1];
+        resolve(base64Data);  // Return only the base64 content
+      };
       reader.onerror = reject;
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file);  // For binary files
     }
   });
 }
