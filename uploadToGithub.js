@@ -4,7 +4,7 @@ require('dotenv').config();  // Load environment variables from .env
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
 const myToken = process.env.GITHUB_TOKEN;  // Ensure this is set in your .env file
-const apiKey = process.env.API_KEY;  // You might not need this depending on your use case
+const apiKey = process.env.API_KEY;  // Optional, depending on your use case
 
 console.log(myToken);  // Print out the token (for debugging purposes)
 
