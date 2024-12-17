@@ -1,29 +1,29 @@
-require('dotenv').config();  // Load environment variables from .env
+require('dotenv').config();  // Make sure you are loading the .env file for the token
 
 // GitHub repository details
-const repoOwner = 'jomvarghese';
-const repoName = 'github-upload';
-const myToken = process.env.GITHUB_TOKEN;  // Ensure this is set in your .env file
+const repoOwner = 'jomvarghese';  // Replace with your GitHub username
+const repoName = 'github-upload';  // Replace with your repository name
+const myToken = process.env.GITHUB_TOKEN;  // Load GitHub token from .env
 
-console.log(myToken);  // Print out the token (for debugging purposes)
+console.log(myToken);  // Log token to confirm it is loaded correctly (for debugging purposes)
 
 // Function to upload a file to GitHub repository
 async function uploadFileToGithub(file, filePath) {
-  const fileContent = await readFile(file); // Read the file (whether text or binary)
+  const fileContent = await readFile(file);  // Read and encode the file content (base64)
 
   // GitHub API URL for uploading file
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
 
   // Use the GitHub token in the Authorization header
   const headers = {
-    'Authorization': `Bearer ${myToken}`,  // Use the token loaded from environment variables
+    'Authorization': `Bearer ${myToken}`,
     'Content-Type': 'application/json',
   };
 
   const data = {
     message: 'Uploading file to Workspace folder',  // Commit message
     content: fileContent,  // Base64 encoded file content
-    branch: 'master',  // You can change this to a different branch if needed
+    branch: 'main',  // You can specify a different branch if needed
   };
 
   try {
@@ -34,21 +34,24 @@ async function uploadFileToGithub(file, filePath) {
     });
 
     const responseData = await response.json();
+    
+    // Log detailed response for debugging
+    console.log('GitHub API response:', responseData);
 
     if (response.ok) {
       alert('File uploaded successfully!');
       console.log('File uploaded successfully:', responseData);
     } else {
-      alert('Error uploading file: ' + responseData.message);
+      alert(`Error uploading file: ${responseData.message}`);
       console.error('Error uploading file:', responseData);
     }
   } catch (error) {
-    alert('Error: ' + error);
+    alert('Error: ' + error.message);
     console.error('Error:', error);
   }
 }
 
-// Helper function to read file (handles text and binary files)
+// Helper function to read file content and encode it in Base64
 function readFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
