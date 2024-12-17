@@ -1,30 +1,37 @@
-const accessToken = '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';
+require('dotenv').config();  // Load environment variables from .env
+
+// GitHub repository details
 const repoOwner = 'jomvarghese';
 const repoName = 'github-upload';
+const myToken = process.env.GITHUB_TOKEN;  // Ensure this is set in your .env file
+const apiKey = process.env.API_KEY;  // You might not need this depending on your use case
+
+console.log(myToken);  // Print out the token (for debugging purposes)
 
 // Function to upload a file to GitHub repository
 async function uploadFileToGithub(file, filePath) {
   const fileContent = await readFile(file); // Read the file (whether text or binary)
 
-  // GitHub API URL
+  // GitHub API URL for uploading file
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
 
+  // Use the GitHub token in the Authorization header
   const headers = {
-    'Authorization': `Bearer ${accessToken}`,
+    'Authorization': `Bearer ${myToken}`,  // Use the token loaded from environment variables
     'Content-Type': 'application/json',
   };
 
   const data = {
-    message: 'Uploading file to Workspace folder', // commit message
-    content: fileContent, // Base64 encoded file content
-    branch: 'master', // You can change this to a different branch if needed
+    message: 'Uploading file to Workspace folder',  // Commit message
+    content: fileContent,  // Base64 encoded file content
+    branch: 'master',  // You can change this to a different branch if needed
   };
 
   try {
     const response = await fetch(url, {
       method: 'PUT',
       headers: headers,
-      body: JSON.stringify(data), // Send data in JSON format
+      body: JSON.stringify(data),  // Send data as JSON
     });
 
     const responseData = await response.json();
@@ -42,25 +49,25 @@ async function uploadFileToGithub(file, filePath) {
   }
 }
 
-// Helper function to read file from the file input
+// Helper function to read file (handles text and binary files)
 function readFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     // If the file is a text file, read it as text
     if (file.type.startsWith('text')) {
-      reader.onload = () => resolve(btoa(reader.result));  // Read as base64 for text files
+      reader.onload = () => resolve(btoa(reader.result));  // Base64 encode the text content
       reader.onerror = reject;
-      reader.readAsText(file);  // For text files
+      reader.readAsText(file);  // Read text files
     } else {
-      // For binary files (like images, pdfs, etc.), read as DataURL
+      // For binary files (like images, PDFs, etc.), read as DataURL
       reader.onload = () => {
-        // Extract base64 part from DataURL (if binary content)
+        // Extract base64 part from DataURL (remove prefix like 'data:image/png;base64,')
         const base64Data = reader.result.split(',')[1];
         resolve(base64Data);  // Return only the base64 content
       };
       reader.onerror = reject;
-      reader.readAsDataURL(file);  // For binary files
+      reader.readAsDataURL(file);  // Read binary files
     }
   });
 }
