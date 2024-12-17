@@ -1,20 +1,22 @@
-require('dotenv').config();  // Make sure you are loading the .env file for the token
+require('dotenv').config();  // Ensure the .env file is loaded properly
 
 // GitHub repository details
 const repoOwner = 'jomvarghese';  // Replace with your GitHub username
 const repoName = 'github-upload';  // Replace with your repository name
-const myToken = process.env.GITHUB_TOKEN;  // Load GitHub token from .env
+const myToken = process.env.GITHUB_TOKEN;  // GitHub token loaded from .env file
 
-console.log(myToken);  // Log token to confirm it is loaded correctly (for debugging purposes)
+console.log('Token:', myToken);  // Log token to check if it's loaded correctly
 
 // Function to upload a file to GitHub repository
 async function uploadFileToGithub(file, filePath) {
-  const fileContent = await readFile(file);  // Read and encode the file content (base64)
+  console.log('Starting file upload...');  // Log when upload begins
+
+  const fileContent = await readFile(file);  // Read the file (base64 encode)
 
   // GitHub API URL for uploading file
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
 
-  // Use the GitHub token in the Authorization header
+  // Headers for GitHub API
   const headers = {
     'Authorization': `Bearer ${myToken}`,
     'Content-Type': 'application/json',
@@ -23,10 +25,11 @@ async function uploadFileToGithub(file, filePath) {
   const data = {
     message: 'Uploading file to Workspace folder',  // Commit message
     content: fileContent,  // Base64 encoded file content
-    branch: 'master',  // You can specify a different branch if needed
+    branch: 'master',  // Use the correct branch name (e.g., 'main')
   };
 
   try {
+    console.log('Sending request to GitHub API...');  // Log before sending request
     const response = await fetch(url, {
       method: 'PUT',
       headers: headers,
@@ -34,9 +37,7 @@ async function uploadFileToGithub(file, filePath) {
     });
 
     const responseData = await response.json();
-    
-    // Log detailed response for debugging
-    console.log('GitHub API response:', responseData);
+    console.log('GitHub API response:', responseData);  // Log the full response from GitHub
 
     if (response.ok) {
       alert('File uploaded successfully!');
@@ -59,7 +60,10 @@ function readFile(file) {
     // If the file is a text file, read it as text
     if (file.type.startsWith('text')) {
       reader.onload = () => resolve(btoa(reader.result));  // Base64 encode the text content
-      reader.onerror = reject;
+      reader.onerror = (err) => {
+        console.error('File read error:', err);
+        reject(err);
+      };
       reader.readAsText(file);  // Read text files
     } else {
       // For binary files (like images, PDFs, etc.), read as DataURL
@@ -68,7 +72,10 @@ function readFile(file) {
         const base64Data = reader.result.split(',')[1];
         resolve(base64Data);  // Return only the base64 content
       };
-      reader.onerror = reject;
+      reader.onerror = (err) => {
+        console.error('File read error:', err);
+        reject(err);
+      };
       reader.readAsDataURL(file);  // Read binary files
     }
   });
@@ -76,14 +83,17 @@ function readFile(file) {
 
 // Attach event listener to the "Upload" button
 document.getElementById('upload-button').addEventListener('click', () => {
+  console.log('Upload button clicked');  // Log to ensure click event is being triggered
+
   const fileInput = document.getElementById('file-input');
-  const file = fileInput.files[0]; // Get the selected file
+  const file = fileInput.files[0];  // Get the selected file
 
   if (file) {
-    // Update filePath to include the selected file's name
-    const filePathWithName = `WorkSpace/${file.name}`;
-    uploadFileToGithub(file, filePathWithName); // Pass the file and filePath
+    console.log('File selected:', file);  // Log the selected file
+    const filePathWithName = `WorkSpace/${file.name}`;  // Specify file path in the repo
+    uploadFileToGithub(file, filePathWithName);  // Call the function to upload the file
   } else {
     alert('Please select a file to upload!');
+    console.log('No file selected!');
   }
 });
