@@ -23,7 +23,7 @@ async function uploadFileToGithub(file, filePath) {
   const data = {
     message: 'Uploading file to Workspace folder',  // Commit message
     content: fileContent,  // Base64 encoded file content
-    branch: 'main',  // You can specify a different branch if needed
+    branch: 'master',  // You can specify a different branch if needed
   };
 
   try {
