@@ -13,15 +13,36 @@
     <input type="file" id="fileUpload" />
     <br><br>
 
+    <label for="tokenUpload">Upload Token File:</label>
+    <input type="file" id="tokenUpload" />
+    <br><br>
+
     <button onclick="uploadFile()">Upload File</button>
 
     <div id="status"></div>
 
     <script>
-        const GITHUB_API_URL = 'https://api.github.com/repos/jomvarghese/github-upload/contents/WorkSpace/'; // Update for WorkSpace folder
-        const ACCESS_TOKEN = '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'; // Use your PAT here
+        let ACCESS_TOKEN = null;
+
+        // Handle token file upload
+        document.getElementById('tokenUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    ACCESS_TOKEN = e.target.result.trim(); // Read token content
+                    console.log('Token loaded:', ACCESS_TOKEN);
+                };
+                reader.readAsText(file);
+            }
+        });
 
         async function uploadFile() {
+            if (!ACCESS_TOKEN) {
+                document.getElementById('status').innerText = 'Please upload a valid token file first.';
+                return;
+            }
+
             const fileInput = document.getElementById('fileUpload');
             const file = fileInput.files[0];
 
@@ -34,16 +55,15 @@
             const fileContent = await readFile(file);
             const encodedContent = btoa(fileContent); // Base64 encode the file content
 
-            // Update URL to include 'master' branch
-            const url = `${GITHUB_API_URL}${fileName}?ref=master`; // ref=master targets the master branch
+            const url = `https://api.github.com/repos/jomvarghese/github-upload/contents/WorkSpace/${fileName}?ref=master`;
             const headers = {
                 'Authorization': `Bearer ${ACCESS_TOKEN}`,
                 'Content-Type': 'application/json'
             };
 
             const data = {
-                message: `Add ${fileName} to WorkSpace`, // Commit message
-                content: encodedContent, // Base64 content of the file
+                message: `Add ${fileName} to WorkSpace`,
+                content: encodedContent,
             };
 
             try {
