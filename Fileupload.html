@@ -53,7 +53,20 @@
 
             const fileName = file.name;
             const fileContent = await readFile(file);
-            const encodedContent = btoa(fileContent); // Base64 encode the file content
+
+            // Use TextEncoder for UTF-8 encoding if the file contains text
+            let encodedContent = null;
+
+            // Check if file content is text or binary
+            if (isTextFile(file)) {
+                // If it's a text file, convert to UTF-8 and then Base64 encode
+                const encoder = new TextEncoder();
+                const encodedText = encoder.encode(fileContent); // Create a Uint8Array
+                encodedContent = btoa(String.fromCharCode.apply(null, encodedText)); // Convert Uint8Array to string and Base64 encode
+            } else {
+                // If it's a binary file (image, etc.), read it as a Data URL (Base64)
+                encodedContent = await getBase64(file);
+            }
 
             const url = `https://api.github.com/repos/jomvarghese/github-upload/contents/WorkSpace/${fileName}?ref=master`;
             const headers = {
@@ -74,6 +87,7 @@
                 });
 
                 const result = await response.json();
+                console.log('API Response:', result); // Log the API response
 
                 if (response.ok) {
                     document.getElementById('status').innerText = `File uploaded successfully: ${result.content.html_url}`;
@@ -81,17 +95,39 @@
                     document.getElementById('status').innerText = `Error: ${result.message}`;
                 }
             } catch (error) {
+                console.log('Error:', error); // Log the error
                 document.getElementById('status').innerText = `Error: ${error.message}`;
             }
         }
 
-        function readFile(file) {
+        // Helper function to check if the file is text or binary
+        function isTextFile(file) {
+            const textFileTypes = ['text/plain', 'text/html', 'text/css', 'application/javascript', 'application/json'];
+            return textFileTypes.includes(file.type);
+        }
+
+        // Helper function to read binary file as Base64 (for images, etc.)
+        function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    resolve(e.target.result);
+                reader.onloadend = function () {
+                    resolve(reader.result.split(',')[1]); // Extract the base64 string from the Data URL
                 };
                 reader.onerror = reject;
+                reader.readAsDataURL(file); // Read file as Data URL (Base64)
+            });
+        }
+
+        // Helper function to read the file as text (for text-based files)
+        async function readFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    resolve(reader.result);
+                };
+                reader.onerror = function(error) {
+                    reject(error);
+                };
                 reader.readAsText(file);
             });
         }
